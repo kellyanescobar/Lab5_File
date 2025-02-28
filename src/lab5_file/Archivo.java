@@ -15,13 +15,11 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-
 public class Archivo {
-    
-private File directorioActual;
+    private File directorioActual;
 
     public Archivo() {
-    
+        
         directorioActual = new File("C:\\Windows\\System32");
     }
 
@@ -56,9 +54,9 @@ private File directorioActual;
     public String eliminar(String nombre) throws Exception {
         File archivoOCarpeta = new File(directorioActual, nombre);
         if(!archivoOCarpeta.exists()){
-            return "El elemento no se encontro.";
+            return "Elemento no encontrado.";
         }
-        
+        // Si es carpeta, debe estar vacía para eliminarla
         if(archivoOCarpeta.isDirectory()){
             String[] contenido = archivoOCarpeta.list();
             if(contenido != null && contenido.length > 0) {
@@ -79,14 +77,13 @@ private File directorioActual;
     public String cambiarDirectorio(String ruta) throws Exception {
         File nuevoDirectorio;
         
-       
+        // Si el usuario ingresa "cd ..", subimos un nivel
         if(ruta.equals("..")) {
             nuevoDirectorio = directorioActual.getParentFile();
             if(nuevoDirectorio == null){
                 return "No se puede regresar más.";
             }
         } else {
-            
             
             File pruebaAbsoluta = new File(ruta);
             if(pruebaAbsoluta.isAbsolute()) {
@@ -154,9 +151,4 @@ private File directorioActual;
         }
         return contenido.toString();
     }
-
-
-
-
-
 }
