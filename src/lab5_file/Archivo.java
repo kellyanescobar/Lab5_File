@@ -19,8 +19,8 @@ public class Archivo {
     private File directorioActual;
 
     public Archivo() {
-        
-        directorioActual = new File("C:\\Windows\\System32");
+       
+        directorioActual = new File("C:\\Users\\Usuario\\OneDrive\\captura\\NetBeansProjects");
     }
 
     public String obtenerRutaActual() {
@@ -28,87 +28,74 @@ public class Archivo {
     }
 
     public String crearCarpeta(String nombreCarpeta) throws Exception {
+        if (nombreCarpeta == null || nombreCarpeta.trim().isEmpty()) {
+            throw new Exception("Debe proporcionar un nombre válido para la carpeta.");
+        }
         File nuevaCarpeta = new File(directorioActual, nombreCarpeta);
-        if(nuevaCarpeta.exists()) {
+        if (nuevaCarpeta.exists()) {
             throw new Exception("La carpeta ya existe.");
         }
-        if(nuevaCarpeta.mkdir()){
-            return "Carpeta '" + nombreCarpeta + "' creada.";
-        } else {
-            throw new Exception("No se pudo crear la carpeta.");
+        if (!nuevaCarpeta.mkdir()) {
+            throw new Exception("No se pudo crear la carpeta. Verifique permisos o nombre.");
         }
+        return "Carpeta '" + nombreCarpeta + "' creada.";
     }
 
     public String crearArchivo(String nombreArchivo) throws Exception {
+        if (nombreArchivo == null || nombreArchivo.trim().isEmpty()) {
+            throw new Exception("Debe proporcionar un nombre válido para el archivo.");
+        }
         File nuevoArchivo = new File(directorioActual, nombreArchivo);
-        if(nuevoArchivo.exists()){
+        if (nuevoArchivo.exists()) {
             throw new Exception("El archivo ya existe.");
         }
-        if(nuevoArchivo.createNewFile()){
-            return "Archivo '" + nombreArchivo + "' creado.";
-        } else {
+        if (!nuevoArchivo.createNewFile()) {
             throw new Exception("No se pudo crear el archivo.");
         }
+        return "Archivo '" + nombreArchivo + "' creado.";
     }
 
     public String eliminar(String nombre) throws Exception {
-        File archivoOCarpeta = new File(directorioActual, nombre);
-        if(!archivoOCarpeta.exists()){
+        File elem = new File(directorioActual, nombre);
+        if (!elem.exists()) {
             return "Elemento no encontrado.";
         }
-        // Si es carpeta, debe estar vacía para eliminarla
-        if(archivoOCarpeta.isDirectory()){
-            String[] contenido = archivoOCarpeta.list();
-            if(contenido != null && contenido.length > 0) {
-                throw new Exception("La carpeta no está vacía.");
-            }
+        
+        if (elem.isDirectory() && elem.list().length > 0) {
+            throw new Exception("La carpeta no está vacía.");
         }
-        if(archivoOCarpeta.delete()){
-            if(archivoOCarpeta.isDirectory()){
-                return "Carpeta '" + nombre + "' eliminada.";
-            } else {
-                return "Archivo '" + nombre + "' eliminado.";
-            }
-        } else {
+        if (!elem.delete()) {
             throw new Exception("No se pudo eliminar el elemento.");
         }
+        return "Elemento '" + nombre + "' eliminado.";
     }
 
     public String cambiarDirectorio(String ruta) throws Exception {
-        File nuevoDirectorio;
-        
-        // Si el usuario ingresa "cd ..", subimos un nivel
-        if(ruta.equals("..")) {
-            nuevoDirectorio = directorioActual.getParentFile();
-            if(nuevoDirectorio == null){
+        File nuevoDir;
+        if (ruta.equals("..")) {
+            nuevoDir = directorioActual.getParentFile();
+            if (nuevoDir == null) {
                 return "No se puede regresar más.";
             }
         } else {
-            
             File pruebaAbsoluta = new File(ruta);
-            if(pruebaAbsoluta.isAbsolute()) {
-                nuevoDirectorio = pruebaAbsoluta;
-            } else {
-                nuevoDirectorio = new File(directorioActual, ruta);
-            }
+            nuevoDir = pruebaAbsoluta.isAbsolute() ? pruebaAbsoluta : new File(directorioActual, ruta);
         }
-        
-       
-        if(nuevoDirectorio.exists() && nuevoDirectorio.isDirectory()){
-            directorioActual = nuevoDirectorio.getAbsoluteFile();
+        if (nuevoDir.exists() && nuevoDir.isDirectory()) {
+            directorioActual = nuevoDir.getAbsoluteFile();
             return "Cambiado a: " + directorioActual.getAbsolutePath();
         } else {
             throw new Exception("Carpeta no encontrada.");
         }
     }
 
-    public String listar() {
+    public String listarElementos() {
         String[] elementos = directorioActual.list();
-        if(elementos == null || elementos.length == 0){
+        if (elementos == null || elementos.length == 0) {
             return "Carpeta vacía.";
         }
         StringBuilder sb = new StringBuilder();
-        for(String elem : elementos){
+        for (String elem : elementos) {
             sb.append(elem).append("\n");
         }
         return sb.toString();
@@ -128,10 +115,10 @@ public class Archivo {
 
     public String escribirArchivo(String nombreArchivo, String texto) throws Exception {
         File archivo = new File(directorioActual, nombreArchivo);
-        if(!archivo.exists()){
+        if (!archivo.exists()) {
             throw new Exception("Archivo no encontrado.");
         }
-        try(FileWriter escritor = new FileWriter(archivo)) {
+        try (FileWriter escritor = new FileWriter(archivo)) {
             escritor.write(texto);
         }
         return "Texto escrito en '" + nombreArchivo + "'.";
@@ -139,16 +126,16 @@ public class Archivo {
 
     public String leerArchivo(String nombreArchivo) throws Exception {
         File archivo = new File(directorioActual, nombreArchivo);
-        if(!archivo.exists()){
+        if (!archivo.exists()) {
             throw new Exception("Archivo no encontrado.");
         }
-        StringBuilder contenido = new StringBuilder();
-        try(BufferedReader lector = new BufferedReader(new FileReader(archivo))) {
+        StringBuilder sb = new StringBuilder();
+        try (BufferedReader lector = new BufferedReader(new FileReader(archivo))) {
             String linea;
-            while((linea = lector.readLine()) != null){
-                contenido.append(linea).append("\n");
+            while ((linea = lector.readLine()) != null) {
+                sb.append(linea).append("\n");
             }
         }
-        return contenido.toString();
+        return sb.toString();
     }
 }
