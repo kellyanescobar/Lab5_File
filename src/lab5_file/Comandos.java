@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
  *
  * @author laraj
  */
+
 public class Comandos {
     
 private Archivo Archivo;
