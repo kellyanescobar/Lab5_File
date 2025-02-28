@@ -4,23 +4,11 @@
  */
 package lab5_file;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import javax.print.attribute.AttributeSet;
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.text.AbstractDocument;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DocumentFilter;
+import javax.swing.*;
+import javax.swing.text.*;
+import java.awt.*;
+import java.awt.event.*;
 
-/**
- *
- * @author DELL
- */
 public class GUIConsola extends JFrame {
     private JTextArea areaTexto;
     private Archivo gestor;
@@ -69,7 +57,7 @@ public class GUIConsola extends JFrame {
 
         
         areaTexto.setText("Microsoft Windows [Version 10.0.22621.521]\n"
-                          + "(c) Microsoft Corporation. All rights reserved.\n\n");
+                          + "(c) Microsoft Windows. Todos los derechos reservados.\n\n");
         mostrarPrompt();
 
         setVisible(true);
@@ -104,7 +92,7 @@ public class GUIConsola extends JFrame {
             archivoEscritura = "";
         } else {
             
-            resultado = procesador.Comandos(entrada);
+            resultado = procesador.procesarComando(entrada);
         }
         if (!resultado.isEmpty()) {
             areaTexto.append(resultado + "\n");

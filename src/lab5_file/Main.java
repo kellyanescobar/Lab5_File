@@ -6,16 +6,13 @@ package lab5_file;
 
 /**
  *
- * @author laraj
+ * @author DELL
  */
-public class ArchivoGUI {
+import javax.swing.SwingUtilities;
 
-    /**
-     * @param args the command line arguments
-     */
+public class Main {
     public static void main(String[] args) {
         
-        
+        SwingUtilities.invokeLater(() -> new GUIConsola());
     }
-    
 }
