@@ -10,96 +10,52 @@ import javax.swing.JOptionPane;
  * @author laraj
  */
 public class Comandos {
-    
-private Archivo Archivo;
-private ArchivoGUI consolaGUI;
+ private Archivo gestor;
+ private GUIConsola consola;
 
-    public Comandos(Archivo GestorArchivo, ArchivoGUI consolaGUI){
-        this.Archivo=GestorArchivo;
-        this.consolaGUI=consolaGUI;
+    public Comandos(Archivo gestor, GUIConsola consola) {
+        this.gestor = gestor;
+        this.consola = consola;
     }
 
-    public String ProcesarComando(String comandoCompleto){
-        if(comandoCompleto.isEmpty()){
+    public String procesarComando(String comando) {
+        if (comando.trim().isEmpty()) {
             return "";
         }
-
-        String[] partes=comandoCompleto.split("\\s+");
-        String comando=partes[0].toLowerCase();
+        String[] partes = comando.split("\\s+");
+        String instruccion = partes[0].toLowerCase();
 
         try {
-            switch(comando){
+            switch (instruccion) {
                 case "mkdir":
-                    if(partes.length >= 2){
-                        return Archivo.crearCarpeta(partes[1]);
-                    }else{
-                        return "Uso: mkdir <nombre>";
-                    }
-
+                    return partes.length >= 2 ? gestor.crearCarpeta(partes[1]) : "Uso: mkdir <nombre>";
                 case "mfile":
-                    if(partes.length >= 2){
-                        return Archivo.crearArchivo(partes[1]);
-                    }else{
-                        return "Uso: mfile <nombre.ext>";
-                    }
-
+                    return partes.length >= 2 ? gestor.crearArchivo(partes[1]) : "Uso: mfile <nombre.ext>";
                 case "rm":
-                    if(partes.length >= 2){
-                        return Archivo.eliminar(partes[1]);
-                    } else {
-                        return "Uso: rm <nombre>";
-                    }
-
+                    return partes.length >= 2 ? gestor.eliminar(partes[1]) : "Uso: rm <nombre>";
                 case "cd":
-                    
-                    String ruta = comandoCompleto.substring(2).trim();
-                    if(ruta.isEmpty()){
-                        return "Uso: cd <ruta>";
-                    }
-                    return Archivo.cambiarDirectorio(ruta);
-
+                    return partes.length >= 2 ? gestor.cambiarDirectorio(partes[1]) : "Uso: cd <nombre carpeta>";
                 case "dir":
-                    return Archivo.listar();
-
+                    return gestor.listarElementos();
                 case "date":
-                    return Archivo.obtenerFecha();
-
+                    return gestor.obtenerFecha();
                 case "time":
-                    return Archivo.obtenerHora();
-
+                    return gestor.obtenerHora();
                 case "wr":
-                    if(partes.length >= 2){
-                        String nombreArchivo = partes[1];
-                        
-                        String textoAEscribir = JOptionPane.showInputDialog(
-                                consolaGUI,
-                                "Ingrese el texto a escribir:",
-                                "Escribir en " + nombreArchivo,
-                                JOptionPane.PLAIN_MESSAGE
-                        );
-                        if(textoAEscribir != null){
-                            return Archivo.escribirArchivo(nombreArchivo, textoAEscribir);
-                        } else {
-                            return "Operacion cancelada";
-                        }
+                    if (partes.length >= 2) {
+                        // En lugar de usar un JOptionPane, activa el modo escritura en la consola.
+                        consola.iniciarModoEscritura(partes[1]);
+                        return "Escriba el texto a escribir:";
                     } else {
-                        return "Uso: wr <archivo>";
+                        return "Uso: wr <archivo.ext>";
                     }
-
                 case "rd":
-                    if(partes.length >= 2) {
-                        return Archivo.leerArchivo(partes[1]);
-                    } else {
-                        return "Uso: rd <archivo>";
-                    }
-
+                    return partes.length >= 2 ? gestor.leerArchivo(partes[1]) : "Uso: rd <archivo.ext>";
                 default:
-                    return "Comando no reconocido";
+                    return "Comando no reconocido.";
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
     }
-
 }
-
