@@ -8,7 +8,7 @@ package lab5_file;
  *
  * @author laraj
  */
-public class Lab5_File {
+public class ArchivoGUI {
 
     /**
      * @param args the command line arguments
