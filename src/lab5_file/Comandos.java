@@ -44,7 +44,6 @@ public class Comandos {
                     return gestor.obtenerHora();
                 case "wr":
                     if (partes.length >= 2) {
-                        // En lugar de usar un JOptionPane, activa el modo escritura en la consola.
                         consola.iniciarModoEscritura(partes[1]);
                         return "Escriba el texto a escribir:";
                     } else {
